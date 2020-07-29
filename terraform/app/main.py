@@ -12,9 +12,9 @@ from flask import abort
 
 PROJECT_ID = os.environ.get('GCP_PROJECT')
 MACHINE_TYPE = "e2-small"
-INSTANCE = "workstation"
+INSTANCE = "centos8"
 DNS_NAME = INSTANCE + "." + PROJECT_ID.replace("-", ".") + "."
-FIREWALL_NAME = "ssh-from-roaming-to-workstation"
+FIREWALL_NAME = "roaming-to-workstation"
 REGION = "europe-west2"
 ZONE = REGION + "-c"
 SUBNETWORK = "main-" + REGION
@@ -41,7 +41,7 @@ INSTANCE_CONFIG = {
       "mode": "READ_WRITE",
       "autoDelete": False,
       "deviceName": INSTANCE,
-      "source": "projects/" + PROJECT_ID + "/zones/" + ZONE + "/disks/" + INSTANCE
+      "source": "projects/" + PROJECT_ID + "/zones/" + ZONE + "/disks/workstation-" + INSTANCE
     }
   ],
   "canIpForward": False,

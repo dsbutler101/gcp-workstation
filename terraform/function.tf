@@ -1,18 +1,3 @@
-locals {
-   function_name = "workstation-manager"
-}
-
-provider "google" {
-  version = "~> 3.31.0"
-  project = var.project
-  region  = var.region
-  zone    = var.zone
-}
-
-provider "archive" {
-  version = "~> 1.3.0"
-}
-
 data "archive_file" "function_dist" {
   type        = "zip"
   source_dir  = "./app"
@@ -76,14 +61,14 @@ resource "google_storage_bucket" "bucket" {
 }
 
 resource "google_storage_bucket_object" "archive" {
-  name   = "${local.function_name}.zip"
+  name   = "workstation-manager.zip"
   bucket = google_storage_bucket.bucket.name
   source = data.archive_file.function_dist.output_path
 }
 
 resource "google_cloudfunctions_function" "function" {
-  name                  = local.function_name
-  description           = local.function_name
+  name                  = "workstation-manager"
+  description           = "workstation-manager"
   runtime               = "python37"
   max_instances         = 1
   available_memory_mb   = 128
@@ -91,7 +76,7 @@ resource "google_cloudfunctions_function" "function" {
   source_archive_object = google_storage_bucket_object.archive.name
   trigger_http          = true
   timeout               = 30
-  entry_point           = replace(local.function_name, "-", "_")
+  entry_point           = "workstation_manager"
   service_account_email = google_service_account.workstation_manager.email
   environment_variables = {
     API_KEY_SHA256 = var.api_key_sha256
