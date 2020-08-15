@@ -15,8 +15,8 @@ MACHINE_TYPE = "e2-small"
 INSTANCE = "centos8"
 DNS_NAME = INSTANCE + "." + PROJECT_ID.replace("-", ".") + "."
 FIREWALL_NAME = "roaming-to-workstation"
-REGION = "europe-west2"
-ZONE = REGION + "-c"
+REGION = os.environ.get('REGION')
+ZONE = os.environ.get('ZONE')
 SUBNETWORK = "main-" + REGION
 INSTANCE_CONFIG = {
   "kind": "compute#instance",

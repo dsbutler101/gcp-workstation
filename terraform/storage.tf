@@ -6,3 +6,8 @@ resource "google_compute_disk" "workstation-centos8" {
   image = "centos-8-v20200714"
   size  = "20"
 }
+
+resource "google_storage_bucket" "artifact_store" {
+  name     = "${var.project}-artifact-store"
+  location = var.region
+}

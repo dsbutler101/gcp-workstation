@@ -17,3 +17,9 @@ variable "api_key_sha256" {
    type = string
    description = "Sha256 has of api secret used in Authorization header to authorise requests"
 }
+
+variable "environment" {
+   type = string
+   description = "Environment configuration represents"
+}
+

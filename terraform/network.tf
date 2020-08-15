@@ -43,3 +43,8 @@ resource "google_compute_firewall" "ssh-from-roaming-to-workstation" {
 
   target_tags = ["workstation"]
 }
+
+resource "google_dns_managed_zone" "workstation-kefa-uk" {
+  name        = var.project
+  dns_name    = "${replace(var.project, "-", ".")}."
+}
