@@ -23,3 +23,13 @@ variable "environment" {
    description = "Environment configuration represents"
 }
 
+variable "ssh_public_key" {
+   type = string
+   description = "SSH key to access workstation host"
+}
+
+variable "user" {
+   type = string
+   description = "Name of user for SSH key"
+}
+

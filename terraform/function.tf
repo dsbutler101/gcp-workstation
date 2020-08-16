@@ -33,6 +33,7 @@ resource "google_project_iam_custom_role" "function" {
     "compute.networks.updatePolicy",
     "compute.subnetworks.use",
     "compute.subnetworks.useExternalIp",
+    "compute.zoneOperations.get",
     "dns.changes.create",
     "dns.changes.get",
     "dns.changes.list",
@@ -50,7 +51,7 @@ resource "google_project_iam_member" "function" {
 }
 
 resource "google_service_account" "instance" {
-  account_id   = "workstation-developer"
+  account_id   = "workstation-instance"
   display_name = "Access granted to workstation instance"
 }
 
@@ -80,8 +81,10 @@ resource "google_cloudfunctions_function" "function" {
   service_account_email = google_service_account.function.email
   environment_variables = {
     API_KEY_SHA256 = var.api_key_sha256
-    REGION = var.region
-    ZONE = var.zone
+    REGION         = var.region
+    ZONE           = var.zone
+    USER           = var.user
+    SSH_PUBLIC_KEY = var.ssh_public_key
   }
 }
 
@@ -89,16 +92,15 @@ resource "google_cloudfunctions_function_iam_member" "invoker" {
   project        = google_cloudfunctions_function.function.project
   region         = google_cloudfunctions_function.function.region
   cloud_function = google_cloudfunctions_function.function.name
-
-  role   = "roles/cloudfunctions.invoker"
-  member = "allUsers"
+  role           = "roles/cloudfunctions.invoker"
+  member         = "allUsers"
 }
 
-#resource "google_project_iam_member" "scheduler" {
-#  project = var.project
-#  role    = "roles/cloudscheduler.serviceAgent"
-#  member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-cloudscheduler.iam.gserviceaccount.com"
-#}
+resource "google_project_iam_member" "scheduler" {
+  project = var.project
+  role    = "roles/cloudscheduler.serviceAgent"
+  member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-cloudscheduler.iam.gserviceaccount.com"
+}
 
 resource "google_cloud_scheduler_job" "daily-stop-instance" {
   name             = "daily-stop-instance"
@@ -106,12 +108,12 @@ resource "google_cloud_scheduler_job" "daily-stop-instance" {
   schedule         = "0 3 * * *"
   time_zone        = "Europe/London"
   attempt_deadline = "320s"
-#  depends_on = [
-#    google_project_iam_member.scheduler,
-#  ]
+  depends_on = [
+    google_project_iam_member.scheduler,
+  ]
   http_target {
     http_method = "DELETE"
-    uri         = "https://compute.googleapis.com/compute/v1/projects/${var.project}/zones/${var.zone}/instances/workstation"
+    uri         = "https://compute.googleapis.com/compute/v1/projects/${var.project}/zones/${var.zone}/instances/centos8"
     oauth_token {
       service_account_email = google_service_account.function.email
     }

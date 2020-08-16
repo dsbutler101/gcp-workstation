@@ -10,14 +10,16 @@ import hashlib
 import time
 from flask import abort
 
-PROJECT_ID = os.environ.get('GCP_PROJECT')
-MACHINE_TYPE = "e2-small"
-INSTANCE = "centos8"
-DNS_NAME = INSTANCE + "." + PROJECT_ID.replace("-", ".") + "."
-FIREWALL_NAME = "roaming-to-workstation"
-REGION = os.environ.get('REGION')
-ZONE = os.environ.get('ZONE')
-SUBNETWORK = "main-" + REGION
+PROJECT_ID      = os.environ.get('GCP_PROJECT')
+REGION          = os.environ.get('REGION')
+ZONE            = os.environ.get('ZONE')
+USER            = os.environ.get('USER')
+SSH_PUBLIC_KEY  = os.environ.get('SSH_PUBLIC_KEY')
+MACHINE_TYPE    = "e2-small"
+INSTANCE        = "centos8"
+DNS_NAME        = INSTANCE + "." + PROJECT_ID.replace("-", ".") + "."
+FIREWALL_NAME   = "ssh-from-roaming-to-workstation"
+SUBNETWORK      = "main-" + REGION
 INSTANCE_CONFIG = {
   "kind": "compute#instance",
   "name": INSTANCE,
@@ -28,7 +30,16 @@ INSTANCE_CONFIG = {
   },
   "metadata": {
     "kind": "compute#metadata",
-    "items": []
+    "items": [
+        {
+            "key": "ssh-keys",
+            "value": USER + ":" + SSH_PUBLIC_KEY
+        },
+        {
+            "key": "shutdown-script",
+            "value": "#!/bin/bash\n\nsystemctl disable google-guest-agent\nsystemctl stop google-guest-agent"
+        }
+    ]
   },
   "tags": {
     "items": ["workstation"]
@@ -62,7 +73,7 @@ INSTANCE_CONFIG = {
   ],
   "serviceAccounts": [
     {
-      "email": PROJECT_ID + "-projectowner@" + PROJECT_ID + ".iam.gserviceaccount.com",
+      "email": "workstation-instance@" + PROJECT_ID + ".iam.gserviceaccount.com",
       "scopes": [
         "https://www.googleapis.com/auth/cloud-platform"
       ]
