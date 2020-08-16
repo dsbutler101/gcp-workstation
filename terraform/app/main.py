@@ -36,8 +36,8 @@ INSTANCE_CONFIG = {
             "value": USER + ":" + SSH_PUBLIC_KEY
         },
         {
-            "key": "shutdown-script",
-            "value": "#!/bin/bash\n\nsystemctl disable google-guest-agent\nsystemctl stop google-guest-agent"
+            "key": "startup-script",
+            "value": "#!/bin/bash\n\nsleep 20\nif [ -d \"/etc/ssh/ssh_host\" ]\nthen\ncp /etc/ssh/ssh_host/ssh_host_* /etc/ssh/\nelse\nmkdir /etc/ssh/ssh_host\ncp /etc/ssh/ssh_host_* /etc/ssh/ssh_host/\nfi"
         }
     ]
   },
