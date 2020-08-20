@@ -21,8 +21,8 @@ class Request():
         return {"CURRENT_IP": ip}
 
 
-f = open(TFVARS_FILE)
-data = imp.load_source('data', '', f)
+with open(TFVARS_FILE) as f:
+   data = imp.load_source('data', '', f)
 os.environ['GCP_PROJECT'] = data.project
 os.environ['REGION'] = data.region
 os.environ['ZONE'] = data.zone
