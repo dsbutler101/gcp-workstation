@@ -8,8 +8,8 @@ resource "google_storage_bucket" "artifact-store" {
 }
 
 resource "google_project_iam_custom_role" "function-custom-role" {
-  role_id     = "workstationManager"
-  title       = "Workstation Manager"
+  role_id     = "customInstanceAdmin"
+  title       = "Custom Instance Admin"
   description = "Custom role for managing workstation instance"
   permissions = [
     "compute.disks.use",
@@ -55,8 +55,8 @@ resource "google_project_iam_member" "function-deployer-binding" {
 }
 
 resource "google_service_account" "instance-service-account" {
-  account_id   = "workstation-instance"
-  display_name = "Access granted to workstation instance"
+  account_id   = "workstation-developer"
+  display_name = "Developer access granted to workstation instance"
 }
 
 resource "google_project_iam_member" "instance-binding" {
