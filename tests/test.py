@@ -34,4 +34,4 @@ os.environ['SSH_PUBLIC_KEY'] = data.ssh_public_key
 
 import main 
 request = Request(sys.argv[1])
-main.workstation_manager(request)
+main.handler(request)

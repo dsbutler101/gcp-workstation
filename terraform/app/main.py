@@ -73,7 +73,7 @@ INSTANCE_CONFIG = {
   ],
   "serviceAccounts": [
     {
-      "email": "workstation-instance@" + PROJECT_ID + ".iam.gserviceaccount.com",
+      "email": "workstation-developer@" + PROJECT_ID + ".iam.gserviceaccount.com",
       "scopes": [
         "https://www.googleapis.com/auth/cloud-platform"
       ]
