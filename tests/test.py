@@ -3,7 +3,8 @@
 import os
 import requests
 import sys
-import imp
+import types
+import importlib.machinery
 
 
 TFVARS_FILE = '../terraform/prod.tfvars'
@@ -21,8 +22,9 @@ class Request():
         return {"CURRENT_IP": ip}
 
 
-f = open(TFVARS_FILE)
-data = imp.load_source('data', '', f)
+loader = importlib.machinery.SourceFileLoader('data', TFVARS_FILE)
+data = types.ModuleType(loader.name)
+loader.exec_module(data)
 os.environ['GCP_PROJECT'] = data.project
 os.environ['REGION'] = data.region
 os.environ['ZONE'] = data.zone
