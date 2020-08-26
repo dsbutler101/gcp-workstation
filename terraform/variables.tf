@@ -15,7 +15,12 @@ variable "zone" {
 
 variable "api_key_sha256" {
    type = string
-   description = "Sha256 has of api secret used in Authorization header to authorise requests"
+   description = "Sha256 hash of api secret used in Authorization header to authorise requests"
+}
+
+variable "api_key" {
+   type = string
+   description = "Unhashed api secret used in Authorization header to authorise requests"
 }
 
 variable "environment" {

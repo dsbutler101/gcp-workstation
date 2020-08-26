@@ -102,7 +102,7 @@ compute = googleapiclient.discovery.build('compute', 'v1', cache_discovery = Fal
 dns     = googleapiclient.discovery.build('dns', 'v1', cache_discovery = False)
 service = googleapiclient.discovery.build('cloudresourcemanager', 'v1', cache_discovery = False)
 
-def workstation_manager(request):
+def handler(request):
   try:
     if "Authorization" in request.headers:
       api_key = request.headers['Authorization']
